@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sorting Game</title>
+  <title>Timer App</title>
   <style>
     html, body {
       margin: 0;
@@ -27,6 +27,12 @@
       padding: 10px 16px;
     }
 
+    .left-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .start-button {
       background-color: green;
       color: white;
@@ -36,114 +42,17 @@
       border-radius: 4px;
     }
 
+    .info-button {
+      background-color: #666;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
     .timer {
       font-size: 18px;
     }
 
-    .box-container {
-      padding: 20px 16px 0 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .row.center {
-      justify-content: center;
-    }
-
-    .box {
-      background-color: #555;
-      aspect-ratio: 1 / 1;
-      flex: 1;
-      border-radius: 6px;
-      max-width: 100px;
-    }
-
-    .bottom-box {
-      background-color: #555;
-      margin: 30px 16px 20px 16px;
-      border-radius: 8px;
-      flex-grow: 1;
-    }
-  </style>
-</head>
-<body>
-  <div class="top-section">
-    <div class="top-bar">
-      <button class="start-button" id="startBtn">Start</button>
-      <div class="timer" id="timerDisplay">1:30</div>
-    </div>
-
-    <div class="box-container">
-      <div class="row">
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-      </div>
-      <div class="row">
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-      </div>
-      <div class="row center">
-        <div class="box"></div>
-        <div class="box"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bottom-box"></div>
-
-  <script>
-    const startBtn = document.getElementById("startBtn");
-    const timerDisplay = document.getElementById("timerDisplay");
-
-    let time = 90; // seconds
-    let timer = null;
-
-    function updateDisplay(seconds) {
-      const min = Math.floor(seconds / 60);
-      const sec = seconds % 60;
-      timerDisplay.textContent = `${min}:${sec.toString().padStart(2, "0")}`;
-    }
-
-    function startTimer() {
-      timer = setInterval(() => {
-        time--;
-        updateDisplay(time);
-        if (time <= 0) {
-          clearInterval(timer);
-          startBtn.textContent = "Start";
-          time = 90;
-        }
-      }, 1000);
-    }
-
-    startBtn.addEventListener("click", () => {
-      if (timer) {
-        // stop and reset
-        clearInterval(timer);
-        timer = null;
-        time = 90;
-        updateDisplay(time);
-        startBtn.textContent = "Start";
-      } else {
-        // start
-        startTimer();
-        startBtn.textContent = "Stop";
-      }
-    });
-
-    // Initial display
-    updateDisplay(time);
-  </script>
-</body>
-</html>
-
-</body>
-</html>
