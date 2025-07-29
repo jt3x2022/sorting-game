@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3-3-2 Layout</title>
+  <title>Timer App</title>
   <style>
     html, body {
       margin: 0;
@@ -75,8 +75,8 @@
 <body>
   <div class="top-section">
     <div class="top-bar">
-      <button class="start-button">Start</button>
-      <div class="timer">1:30</div>
+      <button class="start-button" id="startBtn">Start</button>
+      <div class="timer" id="timerDisplay">1:30</div>
     </div>
 
     <div class="box-container">
@@ -98,6 +98,50 @@
   </div>
 
   <div class="bottom-box"></div>
+
+  <script>
+    const startBtn = document.getElementById("startBtn");
+    const timerDisplay = document.getElementById("timerDisplay");
+
+    let time = 90; // seconds
+    let timer = null;
+
+    function updateDisplay(seconds) {
+      const min = Math.floor(seconds / 60);
+      const sec = seconds % 60;
+      timerDisplay.textContent = `${min}:${sec.toString().padStart(2, "0")}`;
+    }
+
+    function startTimer() {
+      timer = setInterval(() => {
+        time--;
+        updateDisplay(time);
+        if (time <= 0) {
+          clearInterval(timer);
+          startBtn.textContent = "Start";
+          time = 90;
+        }
+      }, 1000);
+    }
+
+    startBtn.addEventListener("click", () => {
+      if (timer) {
+        // stop and reset
+        clearInterval(timer);
+        timer = null;
+        time = 90;
+        updateDisplay(time);
+        startBtn.textContent = "Start";
+      } else {
+        // start
+        startTimer();
+        startBtn.textContent = "Stop";
+      }
+    });
+
+    // Initial display
+    updateDisplay(time);
+  </script>
 </body>
 </html>
 
