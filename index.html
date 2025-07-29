@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Timer App</title>
+  <title>Item Sorting</title>
   <style>
     html, body {
       margin: 0;
@@ -13,6 +13,7 @@
       color: white;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     .top-section {
@@ -78,6 +79,7 @@
       flex: 1;
       border-radius: 6px;
       max-width: 100px;
+      position: relative;
     }
 
     .bottom-box {
@@ -85,9 +87,27 @@
       margin: 30px 16px 20px 16px;
       border-radius: 8px;
       flex-grow: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px;
+      align-content: flex-start;
+      overflow-y: auto;
     }
 
-    /* Modal styles */
+    .emoji {
+      font-size: 32px; /* About 70% of a 100px box */
+      width: 70px;
+      height: 70px;
+      text-align: center;
+      line-height: 70px;
+      border-radius: 8px;
+      background-color: #333;
+      touch-action: none;
+      user-select: none;
+      position: relative;
+    }
+
     .modal {
       position: fixed;
       top: 0; left: 0;
@@ -155,14 +175,25 @@
     </div>
   </div>
 
-  <div class="bottom-box"></div>
+  <div class="bottom-box" id="emojiContainer">
+    <div class="emoji">🥤</div> <!-- Soft drink -->
+    <div class="emoji">🥕</div> <!-- Carrot -->
+    <div class="emoji">🍌</div> <!-- Banana -->
+    <div class="emoji">🥛</div> <!-- Milk -->
+    <div class="emoji">🍫</div> <!-- Chocolate -->
+    <div class="emoji">🍎</div> <!-- Apple -->
+    <div class="emoji">🍰</div> <!-- Cake -->
+    <div class="emoji">🥩</div> <!-- Beef -->
+    <div class="emoji">🍬</div> <!-- Candy -->
+    <div class="emoji">🍭</div> <!-- Lollipop -->
+    <div class="emoji">🛢️</div> <!-- Oil -->
+  </div>
 
-  <!-- Modal -->
   <div class="modal" id="infoModal">
     <div class="modal-content">
-      <h3>How to Play</h3>
+      <h3>How to Use</h3>
       <p>1. Click start to start the timer</p>
-      <p>2. Choose one item and drag it into a box</p>
+      <p>2. Choose one item and drag it into each box</p>
       <p>3. You can only have one item in each box, choose wisely</p>
       <button class="close-btn" id="closeModalBtn">Close</button>
     </div>
@@ -175,7 +206,7 @@
     const modal = document.getElementById("infoModal");
     const closeModalBtn = document.getElementById("closeModalBtn");
 
-    let time = 90; // seconds
+    let time = 90;
     let timer = null;
 
     function updateDisplay(seconds) {
@@ -217,8 +248,31 @@
       modal.style.display = "none";
     });
 
-    // Initial display
     updateDisplay(time);
+
+    // Make emojis draggable by touch
+    const emojis = document.querySelectorAll('.emoji');
+    emojis.forEach(emoji => {
+      emoji.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        emoji.style.position = 'fixed';
+        emoji.style.zIndex = 999;
+        moveAt(touch.clientX, touch.clientY);
+        function moveAt(x, y) {
+          emoji.style.left = x - emoji.offsetWidth / 2 + 'px';
+          emoji.style.top = y - emoji.offsetHeight / 2 + 'px';
+        }
+        function onTouchMove(e) {
+          const touch = e.touches[0];
+          moveAt(touch.clientX, touch.clientY);
+        }
+        document.addEventListener('touchmove', onTouchMove);
+        emoji.addEventListener('touchend', () => {
+          document.removeEventListener('touchmove', onTouchMove);
+          emoji.style.zIndex = 1;
+        }, { once: true });
+      });
+    });
   </script>
 </body>
 </html>
