@@ -1,16 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>sorting game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3-3-2 Layout</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .top-bar {
+      background-color: #444;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+    }
+
+    .start-button {
+      background-color: green;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+
+    .timer {
+      font-size: 18px;
+    }
+
+    .box-container {
+      padding: 20px 16px 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .row.center {
+      justify-content: center;
+    }
+
+    .box {
+      background-color: #555;
+      aspect-ratio: 1 / 1;
+      flex: 1;
+      border-radius: 6px;
+      max-width: 100px;
+    }
+
+    .bottom-box {
+      background-color: #555;
+      margin: 30px 16px 20px 16px;
+      height: 120px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
-    
-    <div class="box"></div>
-    <div class="start">Start</div>
-    <div class="timer">test</div>
-    <script src="script.js"></script>
+  <div class="top-bar">
+    <button class="start-button">Start</button>
+    <div class="timer">1:30</div>
+  </div>
+
+  <div class="box-container">
+    <div class="row">
+      <div class="box"></div>
+      <div class="box"></div>
+      <div class="box"></div>
+    </div>
+    <div class="row">
+      <div class="box"></div>
+      <div class="box"></div>
+      <div class="box"></div>
+    </div>
+    <div class="row center">
+      <div class="box"></div>
+      <div class="box"></div>
+    </div>
+  </div>
+
+  <div class="bottom-box"></div>
 </body>
 </html>
-
