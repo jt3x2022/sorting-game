@@ -230,78 +230,34 @@
         if (time <= 0) {
           clearInterval(timer);
           startBtn.textContent = "Start";
-          time = 30;
-        }
-      }, 1000);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Item Sorting</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background-color: black;
+      font-family: Arial, sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    startBtn.addEventListener("click", () => {
-      if (timer) {
-        clearInterval(timer);
-        timer = null;
-        time = 30;
-        updateDisplay(time);
-        startBtn.textContent = "Start";
-      } else {
-        startTimer();
-        startBtn.textContent = "Stop";
-      }
-    });
+    .top-section {
+      flex-shrink: 0;
+    }
 
-    infoBtn.addEventListener("click", () => {
-      modal.style.display = "flex";
-    });
+    .top-bar {
+      background-color: #444;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+    }
 
-    closeModalBtn.addEventListener("click", () => {
-      modal.style.display = "none";
-    });
-
-    updateDisplay(time);
-
-    // Drag + Lock-in Logic
-    const emojis = document.querySelectorAll('.emoji');
-    emojis.forEach(emoji => {
-      emoji.addEventListener('touchstart', (e) => {
-        const touch = e.touches[0];
-        const clone = emoji.cloneNode(true);
-        document.body.appendChild(clone);
-
-        clone.style.position = 'fixed';
-        clone.style.zIndex = 999;
-        clone.style.pointerEvents = 'none';
-
-        function moveAt(x, y) {
-          clone.style.left = x - clone.offsetWidth / 2 + 'px';
-          clone.style.top = y - clone.offsetHeight / 2 + 'px';
-        }
-
-        moveAt(touch.clientX, touch.clientY);
-
-        function onTouchMove(e) {
-          const t = e.touches[0];
-          moveAt(t.clientX, t.clientY);
-        }
-
-        function onTouchEnd(e) {
-          document.removeEventListener('touchmove', onTouchMove);
-          clone.remove();
-
-          const target = document.elementFromPoint(touch.clientX, touch.clientY);
-          if (target && target.classList.contains('box') && target.dataset.filled === "false") {
-            const placed = emoji.cloneNode(true);
-            placed.style.position = "static";
-            placed.style.margin = "0";
-            placed.style.zIndex = "1";
-            target.appendChild(placed);
-            target.dataset.filled = "true";
-            emoji.style.visibility = "hidden"; // hide used emoji
-          }
-        }
-
-        document.addEventListener('touchmove', onTouchMove);
-        document.addEventListener('touchend', onTouchEnd, { once: true });
-      });
-    });
-  </script>
-</body>
-</html>
+    .left-group {
