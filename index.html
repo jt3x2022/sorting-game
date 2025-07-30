@@ -80,6 +80,9 @@
       border-radius: 6px;
       max-width: 100px;
       position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .bottom-box {
@@ -93,10 +96,12 @@
       padding: 10px;
       align-content: flex-start;
       overflow-y: auto;
+      min-height: 180px;
+      max-height: 300px;
     }
 
     .emoji {
-      font-size: 32px; /* About 70% of a 100px box */
+      font-size: 32px;
       width: 70px;
       height: 70px;
       text-align: center;
@@ -154,49 +159,49 @@
         <button class="start-button" id="startBtn">Start</button>
         <button class="info-button" id="infoBtn">i</button>
       </div>
-      <div class="timer" id="timerDisplay">1:30</div>
+      <div class="timer" id="timerDisplay">0:30</div>
     </div>
 
-    <div class="box-container">
+    <div class="box-container" id="dropZone">
       <div class="row">
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
+        <div class="box" data-filled="false"></div>
+        <div class="box" data-filled="false"></div>
+        <div class="box" data-filled="false"></div>
       </div>
       <div class="row">
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
+        <div class="box" data-filled="false"></div>
+        <div class="box" data-filled="false"></div>
+        <div class="box" data-filled="false"></div>
       </div>
       <div class="row center">
-        <div class="box"></div>
-        <div class="box"></div>
+        <div class="box" data-filled="false"></div>
+        <div class="box" data-filled="false"></div>
       </div>
     </div>
   </div>
 
   <div class="bottom-box" id="emojiContainer">
-    <div class="emoji">🥤</div> <!-- Soft drink -->
-    <div class="emoji">🥕</div> <!-- Carrot -->
-    <div class="emoji">🍌</div> <!-- Banana -->
-    <div class="emoji">🥛</div> <!-- Milk -->
-    <div class="emoji">🍫</div> <!-- Chocolate -->
-    <div class="emoji">🍎</div> <!-- Apple -->
-    <div class="emoji">🍰</div> <!-- Cake -->
-    <div class="emoji">🥩</div> <!-- Beef -->
-    <div class="emoji">🍬</div> <!-- Candy -->
-    <div class="emoji">🍭</div> <!-- Lollipop -->
-    <div class="emoji">🛢️</div> <!-- Oil -->
+    <div class="emoji">🍞</div>
+    <div class="emoji">🥕</div>
+    <div class="emoji">🍌</div>
+    <div class="emoji">🥛</div>
+    <div class="emoji">🍫</div>
+    <div class="emoji">🍎</div>
+    <div class="emoji">🍰</div>
+    <div class="emoji">🥩</div>
+    <div class="emoji">🍗</div>
+    <div class="emoji">🍭</div>
+    <div class="emoji">🍊</div>
     <div class="emoji">🍺</div>
     <div class="emoji">🥦</div>
   </div>
 
   <div class="modal" id="infoModal">
     <div class="modal-content">
-      <h3>How to Use</h3>
-      <p>1. Click start to start the timer</p>
-      <p>2. Choose one item and drag it into each box</p>
-      <p>3. You can only have one item in each box, choose wisely</p>
+      <h3>Get Your Groceries - How to Play</h3>
+      <p>1. Click start to begin</p>
+      <p>2. Choose one item and drag it into a box</p>
+      <p>3. You only have 30 seconds, choose wisely</p>
       <button class="close-btn" id="closeModalBtn">Close</button>
     </div>
   </div>
@@ -207,8 +212,9 @@
     const infoBtn = document.getElementById("infoBtn");
     const modal = document.getElementById("infoModal");
     const closeModalBtn = document.getElementById("closeModalBtn");
+    const boxes = document.querySelectorAll(".box");
 
-    let time = 90;
+    let time = 30;
     let timer = null;
 
     function updateDisplay(seconds) {
@@ -224,7 +230,7 @@
         if (time <= 0) {
           clearInterval(timer);
           startBtn.textContent = "Start";
-          time = 90;
+          time = 30;
         }
       }, 1000);
     }
@@ -233,7 +239,7 @@
       if (timer) {
         clearInterval(timer);
         timer = null;
-        time = 90;
+        time = 30;
         updateDisplay(time);
         startBtn.textContent = "Start";
       } else {
@@ -252,27 +258,48 @@
 
     updateDisplay(time);
 
-    // Make emojis draggable by touch
+    // Drag + Lock-in Logic
     const emojis = document.querySelectorAll('.emoji');
     emojis.forEach(emoji => {
       emoji.addEventListener('touchstart', (e) => {
         const touch = e.touches[0];
-        emoji.style.position = 'fixed';
-        emoji.style.zIndex = 999;
-        moveAt(touch.clientX, touch.clientY);
+        const clone = emoji.cloneNode(true);
+        document.body.appendChild(clone);
+
+        clone.style.position = 'fixed';
+        clone.style.zIndex = 999;
+        clone.style.pointerEvents = 'none';
+
         function moveAt(x, y) {
-          emoji.style.left = x - emoji.offsetWidth / 2 + 'px';
-          emoji.style.top = y - emoji.offsetHeight / 2 + 'px';
+          clone.style.left = x - clone.offsetWidth / 2 + 'px';
+          clone.style.top = y - clone.offsetHeight / 2 + 'px';
         }
+
+        moveAt(touch.clientX, touch.clientY);
+
         function onTouchMove(e) {
-          const touch = e.touches[0];
-          moveAt(touch.clientX, touch.clientY);
+          const t = e.touches[0];
+          moveAt(t.clientX, t.clientY);
         }
-        document.addEventListener('touchmove', onTouchMove);
-        emoji.addEventListener('touchend', () => {
+
+        function onTouchEnd(e) {
           document.removeEventListener('touchmove', onTouchMove);
-          emoji.style.zIndex = 1;
-        }, { once: true });
+          clone.remove();
+
+          const target = document.elementFromPoint(touch.clientX, touch.clientY);
+          if (target && target.classList.contains('box') && target.dataset.filled === "false") {
+            const placed = emoji.cloneNode(true);
+            placed.style.position = "static";
+            placed.style.margin = "0";
+            placed.style.zIndex = "1";
+            target.appendChild(placed);
+            target.dataset.filled = "true";
+            emoji.style.visibility = "hidden"; // hide used emoji
+          }
+        }
+
+        document.addEventListener('touchmove', onTouchMove);
+        document.addEventListener('touchend', onTouchEnd, { once: true });
       });
     });
   </script>
